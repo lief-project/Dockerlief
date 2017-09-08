@@ -3,18 +3,21 @@ LIEF Docker files
 
 ``dockerlief`` contains various Dockerfile as well as *manager* to enjoy `LIEF <https://github.com/lief-project/LIEF>`_
 
-For example to build and get the LIEF's documentation:
+To list all registered dockers:
+
+.. code-block:: bash
+
+  $ dockerlief list
+  
+.. image:: https://raw.githubusercontent.com/lief-project/Dockerlief/master/.github/img/list.png
+
+To build and get the LIEF's documentation:
 
 .. code-block:: bash
 
   $ dockerlief build lief-doc
-
-
-To list all dockers registered:
-
-.. code-block:: bash
-
-  dockerlief list
+  
+.. image:: https://raw.githubusercontent.com/lief-project/Dockerlief/master/.github/img/build.png
 
 Usage
 -----
@@ -70,7 +73,7 @@ To run a Dockerfile manually:
 Android Docker
 --------------
 
-The Dockerfile ``android.docker`` is used to compile LIEF on Android
+The Dockerfile ``android.docker`` is used to compile LIEF for Android
 
 You can specify the target architecture / api level as follow:
 
