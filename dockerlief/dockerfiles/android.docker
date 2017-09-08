@@ -1,0 +1,78 @@
+FROM ubuntu:latest
+MAINTAINER Romain Thomas <rthomas@quarkslab.com>
+
+RUN apt-get update && apt-get dist-upgrade -y &&                              \
+    apt-get install -y software-properties-common &&                          \
+    apt-get update &&                                                         \
+    apt-get install -y git cmake build-essential ca-certificates curl wget && \
+    apt-get install -y ccache &&                                              \
+    apt-get install -y unzip &&                                               \
+    apt-get install -y default-jdk
+
+RUN wget --no-check-certificate http://cmake.org/files/v3.7/cmake-3.7.2-Linux-x86_64.tar.gz && \
+    tar -xzf cmake-3.7.2-Linux-x86_64.tar.gz
+
+ENV PATH=$PWD/cmake-3.7.2-Linux-x86_64/bin:$PATH
+
+# Create lief user with password lief
+RUN useradd -m lief && \
+    echo lief:lief | chpasswd
+
+WORKDIR /home/lief
+USER lief
+ENV HOME=/home/lief                         \
+    ANDROID_NDK_ROOT=/home/lief/android/ndk \
+    ANDROID_SDK_ROOT=/home/lief/android/sdk \
+    LIEF_SRC=/home/lief/LIEF-sources        \
+    LIEF_INSTALL=/home/lief/LIEF-install
+
+RUN mkdir -p $HOME/android && \
+    mkdir -p ${LIEF_SRC} && \
+    mkdir -p ${LIEF_INSTALL}
+
+# Download/Install Android-NDK
+RUN curl -LS https://dl.google.com/android/repository/android-ndk-r15c-linux-x86_64.zip -o android-ndk.zip \
+	&& unzip -q android-ndk.zip -d $HOME/android && mv $HOME/android/android-ndk-r15c $HOME/android/ndk
+
+# Download/Install Android-SDK
+RUN curl -LS https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip -o android-sdk.zip \
+	&& mkdir -p $HOME/android/sdk \
+  && unzip -q android-sdk.zip -d $HOME/android/sdk
+
+WORKDIR ${LIEF_SRC}
+ARG LIEF_BRANCH=master
+RUN git clone --depth 3 --branch ${LIEF_BRANCH} --single-branch https://github.com/lief-project/LIEF.git LIEF
+WORKDIR ${LIEF_SRC}/LIEF
+RUN rm -rf build && mkdir -p build
+WORKDIR build
+
+
+ARG ANDROID_ABI=armeabi-v7a
+ARG ANDROID_NATIVE_API_LEVEL=21
+
+RUN cmake                                     \
+    -DCMAKE_TOOLCHAIN_FILE=${ANDROID_NDK_ROOT}/build/cmake/android.toolchain.cmake \
+    -DANDROID_STL=c++_static                                  \
+    -DANDROID_STL_FORCE_FEATURES=ON                           \
+    -DANDROID_CPP_FEATURES="rtti exceptions"                  \
+    -DANDROID_PIE=on                                          \
+    -DANDROID_ABI=${ANDROID_ABI}                              \
+    -DANDROID_NATIVE_API_LEVEL=${ANDROID_NATIVE_API_LEVEL}    \
+    -DLIEF_PYTHON_API=off                                     \
+    -DLIEF_EXAMPLES=off                                       \
+    -DCMAKE_BUILD_TYPE=Release                                \
+    -DCMAKE_INSTALL_PREFIX=${LIEF_INSTALL}                    \
+    -G "Unix Makefiles" ..
+
+RUN make -j3 install
+RUN make package
+
+# Clean RUN
+RUN rm -fv              \
+	$HOME/android-ndk.zip \
+  $HOME/android-sdk.zip
+
+USER root
+RUN apt-get clean
+
+USER lief

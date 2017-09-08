@@ -1,0 +1,37 @@
+FROM centos:7
+MAINTAINER Romain Thomas <rthomas@quarkslab.com>
+
+ENV LIEF_TMP /tmp/LIEF
+ENV LIEF_INSTALL /tmp/LIEF_INSTALL
+
+# Install requirements
+RUN yum install -y https://centos7.iuscommunity.org/ius-release.rpm
+RUN yum -y update
+RUN yum install -y centos-release-scl scl-utils
+RUN yum-config-manager --enable rhel-server-rhscl-7-rpms
+RUN yum install -y devtoolset-4
+RUN yum install -y git cmake3 python35u python35u-pip python35u-devel
+RUN scl enable devtoolset-4 bash
+
+# Compile LIEF
+ARG LIEF_BRANCH=master
+WORKDIR ${LIEF_TMP}
+RUN git clone --depth 3 --branch ${LIEF_BRANCH} --single-branch https://github.com/lief-project/LIEF.git LIEF
+WORKDIR ${LIEF_TMP}/LIEF
+RUN mkdir -p build
+WORKDIR build
+RUN scl enable devtoolset-4 'bash -c "cmake3     \
+    -DLIEF_PYTHON_API=on                         \
+    -DLIEF_DOC=off                               \
+    -DCMAKE_INSTALL_PREFIX=${LIEF_INSTALL}       \
+    -DCMAKE_BUILD_TYPE=Release                   \
+    .."'
+
+RUN make -j3
+
+# Install and Package LIEF
+WORKDIR api/python
+RUN /usr/bin/python3.5 ./setup.py install || :
+WORKDIR ${LIEF_TMP}/LIEF/build
+RUN make install
+RUN make package
