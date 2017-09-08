@@ -1,7 +1,7 @@
 LIEF Docker files
 =================
 
-``dockerlief`` contains various Dockerfile as well as *manager* to enjoy `LIEF <https://github.com/lief-project/LIEF>`_
+``dockerlief`` contains various Dockerfile as well as a *manager* to enjoy `LIEF <https://github.com/lief-project/LIEF>`_
 
 To list all registered dockers:
 
