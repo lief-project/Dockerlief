@@ -13,7 +13,7 @@ from os.path import join, isfile
 
 sys.path.insert(1, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 import dockerlief
-from dockerlief import DockerAndroid, DockerCentos, DockerDoc, DockerFile
+from dockerlief import DockerAndroid, DockerCentos, DockerDoc, DockerFile, DockerDefault
 
 BANNER = """
   ____             _               _     ___ _____ _____
