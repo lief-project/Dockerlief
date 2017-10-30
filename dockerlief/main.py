@@ -143,7 +143,7 @@ def build_subparser(sparser):
             dest    = 'lief_branch',
             metavar = 'BRANCH',
             action  = 'store',
-            help    = "Branch of LIEF to use (Default: '%(default)s')",
+            help    = "Branch / Tag of LIEF to use (Default: '%(default)s')",
             default = "master")
 
     build_subparser.add_argument("tag")

@@ -69,10 +69,11 @@ class DockerAndroid(DockerFile):
         container = client.containers.run(DockerAndroid.TAG, '/bin/bash', detach=True, stdin_open=True)
         package   = container.exec_run(cmd)
         package   = package.decode("utf-8").strip()
-        output    = "{filename}_API{api:d}_{arch}.tar.gz".format(
-                filename=os.path.basename(package).replace(".tar.gz", ""),
-                api=api_level,
-                arch=DockerAndroid.ARCH_TO_ABI[arch])
+        output    = "LIEF-{tag}-Android_{arch}.tar.gz".format(tag=self._args.lief_branch, arch=DockerAndroid.ARCH_TO_ABI[arch])
+        #output    = "{filename}_API{api:d}_{arch}.tar.gz".format(
+        #        filename=os.path.basename(package).replace(".tar.gz", ""),
+        #        api=api_level,
+        #        arch=DockerAndroid.ARCH_TO_ABI[arch])
 
         self.LOGGER.info("Package '{package}' from '{tag!s}' will be downloaded at '{out}'".format(
             package=package,

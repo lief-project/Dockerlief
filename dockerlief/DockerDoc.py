@@ -44,7 +44,7 @@ class DockerDoc(DockerFile):
         container = client.containers.run(DockerDoc.TAG, detach=True)
 
         doc_path = "/tmp/LIEF_INSTALL/share/LIEF/doc"
-        output = "lief-doc.tar.gz"
+        output = "documentation-{tag}.tar.gz".format(tag=self._args.lief_branch)
         try:
             raw, stat = container.get_archive(doc_path)
             with open(output, 'wb') as f:

@@ -40,7 +40,7 @@ class DockerCentos(DockerFile):
         container = client.containers.run(DockerCentos.TAG, '/usr/bin/bash', detach=True, stdin_open=True)
         package   = container.exec_run(cmd)
         package   = package.decode("utf-8").strip()
-        output    = "{tag}_{filename}".format(tag=DockerCentos.TAG, filename=os.path.basename(package))
+        output    = "LIEF-{tag}-CentOS.tar.gz".format(tag=self._args.lief_branch)
 
         self.LOGGER.info("Package '{package}' from '{tag!s}' will be downloaded at '{out}'".format(
             package=package,
