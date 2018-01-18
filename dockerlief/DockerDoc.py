@@ -22,12 +22,17 @@ class DockerDoc(DockerFile):
             return self.LOGGER.fatal("{} not found!".format(dockerfile_path))
 
         client = docker.APIClient(base_url='unix://var/run/docker.sock')
+
+        build_args = {
+            'LIEF_BRANCH': self._args.lief_branch
+        }
         log = client.build(
                 path=self._args.docker_directory,
                 tag=DockerDoc.TAG,
                 rm=True,
                 forcerm=True,
                 quiet=False,
+                buildargs=build_args,
                 dockerfile=DockerDoc.FILE)
 
         for line in log:

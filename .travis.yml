@@ -1,0 +1,15 @@
+language: python
+notifications:
+  email:
+    on_success: never
+    on_failure: always
+
+sudo: required
+services:
+  - docker
+
+python:
+    - "3.6"
+
+script:
+  - python ./dockerlief/main.py list

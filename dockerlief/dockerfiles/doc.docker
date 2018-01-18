@@ -29,10 +29,11 @@ RUN python3 -m pip install sphinx_rtd_theme
 ENV CC=gcc-5
 ENV CXX=g++-5
 
-ARG LIEF_BRANCH=master
 WORKDIR ${LIEF_TMP}
-RUN git clone --depth 3 --branch ${LIEF_BRANCH} --single-branch https://github.com/lief-project/LIEF.git LIEF
+RUN git clone https://github.com/lief-project/LIEF.git LIEF
 WORKDIR ${LIEF_TMP}/LIEF
+ARG LIEF_BRANCH=master
+RUN git checkout ${LIEF_BRANCH}
 RUN mkdir -p build
 WORKDIR build
 RUN cmake                                        \

@@ -40,9 +40,10 @@ RUN curl -LS https://dl.google.com/android/repository/sdk-tools-linux-3859397.zi
   && unzip -q android-sdk.zip -d $HOME/android/sdk
 
 WORKDIR ${LIEF_SRC}
-ARG LIEF_BRANCH=master
-RUN git clone --depth 3 --branch ${LIEF_BRANCH} --single-branch https://github.com/lief-project/LIEF.git LIEF
+RUN git clone https://github.com/lief-project/LIEF.git LIEF
 WORKDIR ${LIEF_SRC}/LIEF
+ARG LIEF_BRANCH=master
+RUN git checkout ${LIEF_BRANCH}
 RUN rm -rf build && mkdir -p build
 WORKDIR build
 

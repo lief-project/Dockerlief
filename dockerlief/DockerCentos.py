@@ -21,12 +21,17 @@ class DockerCentos(DockerFile):
         if not os.path.isfile(dockerfile_path):
             return self.LOGGER.fatal("{} not found!".format(dockerfile_path))
 
+        build_args = {
+            'LIEF_BRANCH': self._args.lief_branch
+        }
+
         client.images.build(
                 path=self._args.docker_directory,
                 tag=DockerCentos.TAG,
                 rm=True,
                 forcerm=True,
                 quiet=False,
+                buildargs=build_args,
                 dockerfile=DockerCentos.FILE)
 
 

@@ -20,24 +20,20 @@ ENV PATH=$PWD/cmake-3.7.2-Linux-x86_64/bin:$PATH
 ENV CC=gcc-5
 ENV CXX=g++-5
 
-WORKDIR ${LIEF_TMP}
-RUN git clone https://github.com/lief-project/LIEF.git LIEF
-WORKDIR ${LIEF_TMP}/LIEF
 ARG LIEF_BRANCH=master
-RUN git checkout ${LIEF_BRANCH}
+WORKDIR ${LIEF_TMP}
+RUN git clone --depth 3 --branch ${LIEF_BRANCH} --single-branch https://github.com/lief-project/LIEF.git LIEF
+WORKDIR ${LIEF_TMP}/LIEF
 RUN mkdir -p build
 WORKDIR build
-RUN cmake                                          \
-      -DCMAKE_CXX_COMPILER=${CXX}                  \
-      -DCMAKE_C_COMPILER=${CC}                     \
-      -DLIEF_PYTHON_API=on                         \
-      -DPYTHON_VERSION=3.5                         \
-      -DLIEF_DOC=off                               \
-      -DCMAKE_INSTALL_PREFIX=${LIEF_INSTALL}       \
-      -DCMAKE_BUILD_TYPE=Release                   \
+RUN cmake                                    \
+      -DCMAKE_CXX_COMPILER=${CXX}            \
+      -DCMAKE_C_COMPILER=${CC}               \
+      -DLIEF_DOC=off                         \
+      -DCMAKE_BUILD_TYPE=Release             \
+      -DLIEF_FUZZING=on                      \
       -G "Unix Makefiles" ..
 
-RUN make -j3 install
+RUN make -j3 pme_fuzzer
+RUN make fuzz
 
-WORKDIR api/python
-RUN /usr/bin/python3.5 ./setup.py install || :
