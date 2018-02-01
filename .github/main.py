@@ -102,7 +102,7 @@ def fix_ssh_perms():
     SSH_DIR = pathlib.Path("~/.ssh").expanduser().resolve().as_posix()
     cmd = f"chmod -c -R go-rwx {SSH_DIR}"
 
-    p = subprocess.Popen(cmd, **kwargs)
+    p = subprocess.Popen(cmd)
     p.wait()
 
     if p.returncode:
