@@ -51,8 +51,8 @@ def setup_lief_website(branch="master"):
         "chmod 700 .git",
         f"{GIT} config user.name '{GIT_USER}'",
         f"{GIT} config user.email '{GIT_EMAIL}'",
-        "{GIT} reset --soft HEAD~1",
-        "{GIT} ls-files -v",
+        f"{GIT} reset --soft HEAD~1",
+        f"{GIT} ls-files -v",
     ]
 
     kwargs['cwd'] = REPODIR / "lief-project.github.io"
