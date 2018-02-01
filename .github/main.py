@@ -27,10 +27,17 @@ DEPLOY_IV  = os.getenv("LIEF_AUTOMATIC_BUILDS_IV", None)
 GIT_USER  = "Dockerlief"
 GIT_EMAIL = "lief@quarkslab.com"
 
-LIEF_WEBSITE_REPO = "https://github.com/lief-project/lief-project.github.io.git"
+LIEF_WEBSITE_REPO     = "https://github.com/lief-project/lief-project.github.io.git"
+LIEF_WEBSITE_DIR      = REPODIR / "lief-project.github.io"
+LIEF_WEBSITE_SSH_REPO = "git@github.com:lief-project/lief-project.github.io.git"
 
-PYTHON = shutil.which("python")
-GIT = shutil.which("git")
+SSH_DIR = pathlib.Path("~/.ssh").resolve()
+
+
+PYTHON  = shutil.which("python")
+GIT     = shutil.which("git")
+TAR     = shutil.which("tar")
+OPENSSL = shutil.which("openssl")
 
 def setup_lief_website(branch="master"):
     cmd = f"{GIT} clone --branch=master --single-branch {LIEF_WEBSITE_REPO}"
@@ -55,13 +62,91 @@ def setup_lief_website(branch="master"):
         f"{GIT} ls-files -v",
     ]
 
-    kwargs['cwd'] = REPODIR / "lief-project.github.io"
+    kwargs['cwd'] = LIEF_WEBSITE_DIR
     for cmd in cmds:
         p = subprocess.Popen(cmd, **kwargs)
         p.wait()
 
         if p.returncode:
             sys.exit(1)
+
+    doc_archive = REPODIR / f"documentation-{TRIGGER_COMMIT}.tar.gz"
+
+    cmds = [
+        f"{TAR} -C {LIEF_WEBSITE_DIR}/doc/latest/ -xvf {doc_archive} doc/sphinx",
+        f"{shutil.which('mv')} {LIEF_WEBSITE_DIR}/doc/latest/doc/sphinx/* -xvf {LIEF_WEBSITE_DIR}/doc/latest/",
+        f"{GIT} add .",
+        f"{GIT} diff --cached",
+        f"{GIT} commit -m 'Update latest doc according to {TRIGGER_COMMIT[:7]}'"
+        f"{GIT} ls-files -v"
+        f"{GIT} log --pretty=fuller"
+    ]
+
+    for cmd in cmds:
+        p = subprocess.Popen(cmd, **kwargs)
+        p.wait()
+
+        if p.returncode:
+            sys.exit(1)
+
+    setup_ssh()
+
+    cmd = f"{GIT} push --force {LIEF_WEBSITE_SSH_REPO} 'master'"
+
+    p = subprocess.Popen(cmd, **kwargs)
+    p.wait()
+
+    if p.returncode:
+        sys.exit(1)
+
+
+def fix_ssh_perms()
+    SSH_DIR = pathlib.Path("~/.ssh").resolve().as_posix()
+    cmd = f"chmod -c -R go-rwx {SSH_DIR}"
+
+    p = subprocess.Popen(cmd, **kwargs)
+    p.wait()
+
+    if p.returncode:
+        sys.exit(1)
+    output_key_path.chmod(0o600)
+
+def setup_ssh():
+    if not SSH_DIR.is_dir():
+        SSH_DIR.mkdir(mode=0o700)
+
+    fix_ssh_perms()
+    deploy_key_path = (REPODIR / ".github" / "deploy-key.enc").as_posix()
+    output_key_path = (REPODIR / ".git" / "deploy-key")
+    cmd = f"{OPENSSL} aes-256-cbc -K {DEPLOY_KEY} -iv {DEPLOY_IV} -in {deploy_key_path} -out {output_key_path.as_posix()} -d"
+
+    kwargs = {
+        'shell':      True,
+        'cwd':        REPODIR,
+    }
+
+    p = subprocess.Popen(cmd, **kwargs)
+    p.wait()
+
+    if p.returncode:
+        sys.exit(1)
+    output_key_path.chmod(0o600)
+
+    os.system(f"eval `ssh-agent -s`; ssh-add {output_key_path.as_posix()}")
+    fix_ssh_perms()
+
+    cmd = f"ssh-keyscan -H github.com >> {SSH_DIR}/known_hosts"
+
+    kwargs = {
+        'shell':      True,
+        'cwd':        REPODIR,
+    }
+
+    p = subprocess.Popen(cmd, **kwargs)
+    p.wait()
+
+    if p.returncode:
+        sys.exit(1)
 
 
 
@@ -73,8 +158,6 @@ def build_doc(commit):
     logger.debug(f"Executing: {cmd}")
 
     kwargs = {
-        #'stdout':     subprocess.STDOUT,
-        #'stderr':     subprocess.STDOUT,
         'shell':      True,
         'cwd':        REPODIR,
     }
@@ -84,12 +167,13 @@ def build_doc(commit):
     if p.returncode:
         sys.exit(1)
 
+    setup_lief_website()
+
 
 def main(argv):
 
     if TRIGGER_ACTION == "build-doc":
         build_doc(TRIGGER_COMMIT)
-        setup_lief_website()
 
     return 0
 
