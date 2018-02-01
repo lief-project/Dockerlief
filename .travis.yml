@@ -13,4 +13,4 @@ python:
 
 script:
   - python ./dockerlief/main.py list
-  - python ./dockerlief/main.py --debug build --branch=master lief-doc
+  - python ./.github/main.py
