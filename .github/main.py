@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 CURRENTDIR = pathlib.Path(__file__).resolve().parent
 REPODIR    = CURRENTDIR.parent
-sys.path.insert(0, REPODIR.as_posix())
+#sys.path.insert(0, REPODIR.as_posix())
 
 TRIGGER_COMMIT  = os.getenv("TRIGGER_COMMIT",  None)
 TRIGGER_REPO    = os.getenv("TRIGGER_REPO",    None)
@@ -25,8 +25,6 @@ DEPLOY_KEY = os.getenv("LIEF_AUTOMATIC_BUILDS_KEY", None)
 DEPLOY_IV  = os.getenv("LIEF_AUTOMATIC_BUILDS_IV", None)
 
 LIEF_WEBSITE_REPO = "https://github.com/lief-project/lief-project.github.io.git"
-
-import dockerlief
 
 PYTHON = shutil.which("python")
 GIT = shutil.which("git")
@@ -44,7 +42,7 @@ def build_doc(commit):
     kwargs = {
         #'stdout':     subprocess.STDOUT,
         #'stderr':     subprocess.STDOUT,
-        'shell':      True
+        'shell':      True,
         'cwd':        REPODIR,
     }
     p = subprocess.Popen(cmd, **kwargs)
