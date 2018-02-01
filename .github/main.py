@@ -31,7 +31,7 @@ LIEF_WEBSITE_REPO     = "https://github.com/lief-project/lief-project.github.io.
 LIEF_WEBSITE_DIR      = REPODIR / "lief-project.github.io"
 LIEF_WEBSITE_SSH_REPO = "git@github.com:lief-project/lief-project.github.io.git"
 
-SSH_DIR = pathlib.Path("~/.ssh").expanduse().resolve()
+SSH_DIR = pathlib.Path("~/.ssh").expanduser().resolve()
 
 
 PYTHON  = shutil.which("python")
