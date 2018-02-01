@@ -100,7 +100,7 @@ def setup_lief_website(branch="master"):
         sys.exit(1)
 
 
-def fix_ssh_perms()
+def fix_ssh_perms():
     SSH_DIR = pathlib.Path("~/.ssh").resolve().as_posix()
     cmd = f"chmod -c -R go-rwx {SSH_DIR}"
 
