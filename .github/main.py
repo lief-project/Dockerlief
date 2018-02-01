@@ -35,7 +35,7 @@ def build_doc(commit):
     kwargs = {
         'stdout':     subprocess.STDOUT,
         'stderr':     subprocess.STDOUT,
-        'cwd':        REPODIR,
+        #'cwd':        REPODIR,
     }
     p = subprocess.Popen(cmd, **kwargs)
     p.wait()
