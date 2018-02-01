@@ -28,7 +28,7 @@ PYTHON = shutil.which("python")
 
 def build_doc(commit):
     main_script = (REPODIR / "dockerlief" / "main.py").as_posix()
-    cmd = f"{PYTHON} {main_script} --debug build --branch={commit} lief-doc"
+    cmd = f"{PYTHON} {main_script} --debug build lief-doc"
 
     logger.debug(f"Executing: {cmd}")
 
