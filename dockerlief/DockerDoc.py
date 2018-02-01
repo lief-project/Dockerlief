@@ -29,8 +29,8 @@ class DockerDoc(DockerFile):
         log = client.build(
                 path=self._args.docker_directory,
                 tag=DockerDoc.TAG,
-                rm=True,
-                forcerm=True,
+                rm=False,
+                forcerm=False,
                 quiet=False,
                 buildargs=build_args,
                 dockerfile=DockerDoc.FILE)

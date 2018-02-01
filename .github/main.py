@@ -76,10 +76,8 @@ def setup_lief_website(branch="master"):
         f"{TAR} -C {LIEF_WEBSITE_DIR}/doc/latest/ -xvf {doc_archive} doc/sphinx",
         f"{shutil.which('mv')} {LIEF_WEBSITE_DIR}/doc/latest/doc/sphinx/* {LIEF_WEBSITE_DIR}/doc/latest/",
         f"{GIT} add .",
-        f"{GIT} diff --cached",
+        #f"{GIT} diff --cached",
         f"{GIT} commit -m 'Update latest doc according to {TRIGGER_COMMIT[:7]}'"
-        f"{GIT} ls-files -v"
-        f"{GIT} log --pretty=fuller"
     ]
 
     for cmd in cmds:
