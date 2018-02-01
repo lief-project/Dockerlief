@@ -21,21 +21,31 @@ TRIGGER_REPO    = os.getenv("TRIGGER_REPO",    None)
 TRIGGER_ACTION  = os.getenv("TRIGGER_ACTION",  None)
 DEPENDENT_BUILD = os.getenv("DEPENDENT_BUILD", None)
 
+DEPLOY_KEY = os.getenv("LIEF_AUTOMATIC_BUILDS_KEY", None)
+DEPLOY_IV  = os.getenv("LIEF_AUTOMATIC_BUILDS_IV", None)
+
+LIEF_WEBSITE_REPO = "https://github.com/lief-project/lief-project.github.io.git"
+
 import dockerlief
 
 PYTHON = shutil.which("python")
+GIT = shutil.which("git")
+
+def clone_lief_website(branch="master"):
+    cmd = f"{GIT} clone --branch=master --single-branch {LIEF_WEBSITE_REPO}"
 
 
 def build_doc(commit):
     main_script = (REPODIR / "dockerlief" / "main.py").as_posix()
-    cmd = f"{PYTHON} {main_script} --debug build lief-doc"
+    cmd = f"{PYTHON} {main_script} --debug build --branch={commit} lief-doc"
 
     logger.debug(f"Executing: {cmd}")
 
     kwargs = {
-        'stdout':     subprocess.STDOUT,
-        'stderr':     subprocess.STDOUT,
-        #'cwd':        REPODIR,
+        #'stdout':     subprocess.STDOUT,
+        #'stderr':     subprocess.STDOUT,
+        'shell':      True
+        'cwd':        REPODIR,
     }
     p = subprocess.Popen(cmd, **kwargs)
     p.wait()
