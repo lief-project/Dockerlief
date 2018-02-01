@@ -31,7 +31,7 @@ LIEF_WEBSITE_REPO     = "https://github.com/lief-project/lief-project.github.io.
 LIEF_WEBSITE_DIR      = REPODIR / "lief-project.github.io"
 LIEF_WEBSITE_SSH_REPO = "git@github.com:lief-project/lief-project.github.io.git"
 
-SSH_DIR = pathlib.Path("~/.ssh").resolve()
+SSH_DIR = pathlib.Path("~/.ssh").expanduse().resolve()
 
 
 PYTHON  = shutil.which("python")
@@ -99,7 +99,7 @@ def setup_lief_website(branch="master"):
 
 
 def fix_ssh_perms():
-    SSH_DIR = pathlib.Path("~/.ssh").resolve().as_posix()
+    SSH_DIR = pathlib.Path("~/.ssh").expanduse().resolve().as_posix()
     cmd = f"chmod -c -R go-rwx {SSH_DIR}"
 
     p = subprocess.Popen(cmd, **kwargs)
