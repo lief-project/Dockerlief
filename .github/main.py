@@ -33,7 +33,6 @@ def build_doc(commit):
     logger.debug(f"Executing: {cmd}")
 
     kwargs = {
-        'executable': '/bin/bash',
         'stdout':     subprocess.STDOUT,
         'stderr':     subprocess.STDOUT,
         'shell':      True,
