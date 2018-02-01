@@ -25,6 +25,7 @@ import dockerlief
 
 PYTHON = shutil.which("python")
 
+
 def build_doc(commit):
     main_script = (REPODIR / "dockerlief" / "main.py").as_posix()
     cmd = f"{PYTHON} {main_script} --debug build --branch={commit} lief-doc"
@@ -36,7 +37,7 @@ def build_doc(commit):
         'stdout':     subprocess.STDOUT,
         'stderr':     subprocess.STDOUT,
         'shell':      True,
-        'cwd':        REPODIR,
+        'cwd':        REPODIR.as_posix(),
     }
     p = subprocess.Popen(cmd, **kwargs)
     p.wait()
