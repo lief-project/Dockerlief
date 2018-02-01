@@ -6,7 +6,13 @@ import pathlib
 import subprocess
 import shutil
 
-CURRENTDIR = pathlib.Path(__file__).parent
+LOG_LEVEL = logging.DEBUG
+
+logging.getLogger().addHandler(logging.StreamHandler())
+logging.getLogger().setLevel(LOG_LEVEL)
+logger = logging.getLogger(__name__)
+
+CURRENTDIR = pathlib.Path(__file__).resolve().parent
 REPODIR    = CURRENTDIR.parent
 sys.path.insert(0, REPODIR.as_posix())
 
@@ -22,6 +28,9 @@ PYTHON = shutil.which("python")
 def build_doc(commit):
     main_script = (REPODIR / "dockerlief" / "main.py").as_posix()
     cmd = f"{PYTHON} {main_script} --debug build --branch={commit} lief-doc"
+
+    logger.debug(f"Executing: {cmd}")
+
     kwargs = {
         'executable': '/bin/bash',
         'stdout':     subprocess.STDOUT,
