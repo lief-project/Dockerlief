@@ -38,7 +38,7 @@ def build_doc(commit):
         'shell':      True,
         'cwd':        REPODIR,
     }
-    p = subprocess.Popen(cmd, *kwargs)
+    p = subprocess.Popen(cmd, **kwargs)
     p.wait()
 
     if p.returncode:
