@@ -102,13 +102,13 @@ def fix_ssh_perms():
     if not SSH_DIR.is_dir():
         return
 
-    cmd = f"chmod -c -R go-rwx {SSH_DIR}"
+    #cmd = f"chmod -c -R go-rwx {SSH_DIR}"
 
-    p = subprocess.Popen(cmd)
-    p.wait()
+    #p = subprocess.Popen(cmd)
+    #p.wait()
 
-    if p.returncode:
-        sys.exit(1)
+    #if p.returncode:
+    #    sys.exit(1)
 
 def setup_ssh():
     if not SSH_DIR.is_dir():
