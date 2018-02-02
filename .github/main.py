@@ -1,6 +1,7 @@
 #!/usr/bin/env python3.6
 import sys
 import os
+import re
 import logging
 import pathlib
 import subprocess
@@ -111,6 +112,26 @@ def fix_ssh_perms():
 
     #if p.returncode:
     #    sys.exit(1)
+def start_ssh_agent()
+    process = subprocess.run('ssh-agent', stdout=subprocess.PIPE, universal_newlines=True)
+    OUTPUT_PATTERN = re.compile(r'SSH_AUTH_SOCK=(?P<socket>[^;]+).*SSH_AGENT_PID=(?P<pid>\d+)', re.MULTILINE | re.DOTALL)
+    match = OUTPUT_PATTERN.search(process.stdout)
+    if match is None:
+        raise RuntimeError("Can't start ssh-agent")
+
+    agent_data = match.groupdict()
+    logger.info(f'ssh agent data: {agent_data!s}')
+    logger.info('Exporting ssh agent environment variables' )
+
+    os.environ['SSH_AUTH_SOCK'] = agent_data['socket']
+    os.environ['SSH_AGENT_PID'] = agent_data['pid']
+
+    process = subprocess.run('ssh-add -L', shell=True)
+
+def add_ssh_key(keypath):
+    process = subprocess.run(['ssh-add', keypath])
+    if process.returncode != 0:
+        raise Exception(f'Failed to add the key: {keypath}')
 
 def setup_ssh():
     if not SSH_DIR.is_dir():
@@ -132,8 +153,8 @@ def setup_ssh():
     if p.returncode:
         sys.exit(1)
     output_key_path.chmod(0o600)
-
-    os.system(f"eval `ssh-agent -s`; ssh-add {output_key_path.as_posix()}")
+    start_ssh_agent()
+    add_ssh_key(output_key_path.as_posix())
     fix_ssh_perms()
 
     cmd = f"ssh-keyscan -H github.com >> {SSH_DIR.as_posix()}/known_hosts"
