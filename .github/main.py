@@ -40,15 +40,8 @@ TAR     = shutil.which("tar")
 OPENSSL = shutil.which("openssl")
 
 def setup_lief_website(branch="master"):
-    cmd = f"{GIT} clone --branch=master --single-branch {LIEF_WEBSITE_REPO}"
-
-    logger.debug(f"Executing: {cmd}")
-
-    kwargs = {
-        'shell':      True,
-        'cwd':        REPODIR,
-    }
-    p = subprocess.Popen(cmd, **kwargs)
+    # 1. Clone the repo
+    p = subprocess.Popen(f"{GIT} clone --branch=master --single-branch {LIEF_WEBSITE_REPO}", shell=True, cwd=REPODIR)
     p.wait()
 
     if p.returncode:
@@ -62,9 +55,8 @@ def setup_lief_website(branch="master"):
         f"{GIT} ls-files -v",
     ]
 
-    kwargs['cwd'] = LIEF_WEBSITE_DIR
     for cmd in cmds:
-        p = subprocess.Popen(cmd, **kwargs)
+        p = subprocess.Popen(cmd, shell=True, cwd=LIEF_WEBSITE_DIR)
         p.wait()
 
         if p.returncode:
@@ -81,21 +73,31 @@ def setup_lief_website(branch="master"):
     ]
 
     for cmd in cmds:
-        p = subprocess.Popen(cmd, **kwargs)
+        p = subprocess.Popen(cmd, shell=True, cwd=LIEF_WEBSITE_DIR)
         p.wait()
 
         if p.returncode:
             sys.exit(1)
 
     setup_ssh()
+    for i in range(10):
+        p = subprocess.Popen(f"{GIT} push --force {LIEF_WEBSITE_SSH_REPO} master", shell=True, cwd=LIEF_WEBSITE_DIR)
+        p.wait()
 
-    cmd = f"{GIT} push --force {LIEF_WEBSITE_SSH_REPO} 'master'"
+        if p.returncode == 0:
+            break
 
-    p = subprocess.Popen(cmd, **kwargs)
-    p.wait()
+        cmds = [
+            f"{GIT} branch -a -v",
+            f"{GIT} fetch -v origin master",
+            f"{GIT} branch -a -v",
+            f"{GIT} rebase -s recursive -X theirs FETCH_HEAD",
+            f"{GIT} branch -a -v",
+        ]
+        for c in cmds:
+            p = subprocess.Popen(c, shell=True, cwd=LIEF_WEBSITE_DIR)
+            p.wait()
 
-    if p.returncode:
-        sys.exit(1)
 
 
 def fix_ssh_perms():
@@ -134,7 +136,7 @@ def setup_ssh():
     os.system(f"eval `ssh-agent -s`; ssh-add {output_key_path.as_posix()}")
     fix_ssh_perms()
 
-    cmd = f"ssh-keyscan -H github.com >> {SSH_DIR}/known_hosts"
+    cmd = f"ssh-keyscan -H github.com >> {SSH_DIR.as_posix()}/known_hosts"
 
     kwargs = {
         'shell':      True,
