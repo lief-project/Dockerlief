@@ -99,7 +99,9 @@ def setup_lief_website(branch="master"):
 
 
 def fix_ssh_perms():
-    SSH_DIR = pathlib.Path("~/.ssh").expanduser().resolve().as_posix()
+    if not SSH_DIR.is_dir():
+        return
+
     cmd = f"chmod -c -R go-rwx {SSH_DIR}"
 
     p = subprocess.Popen(cmd)
@@ -107,7 +109,6 @@ def fix_ssh_perms():
 
     if p.returncode:
         sys.exit(1)
-    output_key_path.chmod(0o600)
 
 def setup_ssh():
     if not SSH_DIR.is_dir():
