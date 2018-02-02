@@ -112,7 +112,7 @@ def fix_ssh_perms():
 
     #if p.returncode:
     #    sys.exit(1)
-def start_ssh_agent()
+def start_ssh_agent():
     process = subprocess.run('ssh-agent', stdout=subprocess.PIPE, universal_newlines=True)
     OUTPUT_PATTERN = re.compile(r'SSH_AUTH_SOCK=(?P<socket>[^;]+).*SSH_AGENT_PID=(?P<pid>\d+)', re.MULTILINE | re.DOTALL)
     match = OUTPUT_PATTERN.search(process.stdout)
