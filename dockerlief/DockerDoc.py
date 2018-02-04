@@ -13,7 +13,7 @@ class DockerDoc(DockerFile):
     def __init__(self, args=None):
         super().__init__(args)
 
-        self._image_tag = f"{DockerDoc.TAG}:{branch}"
+        self._image_tag = f"{DockerDoc.TAG}:{self._args.lief_branch}"
 
     def _build(self, client):
         """
