@@ -13,6 +13,8 @@ class DockerDoc(DockerFile):
     def __init__(self, args=None):
         super().__init__(args)
 
+        self._image_tag = f"{DockerDoc.TAG}:{branch}"
+
     def _build(self, client):
         """
         Build the docker
@@ -29,7 +31,8 @@ class DockerDoc(DockerFile):
         }
         log = client.build(
                 path=self._args.docker_directory,
-                tag=f"{DockerDoc.TAG}:{branch}",
+                tag=self._image_tag,
+                nocache=False,
                 rm=False,
                 forcerm=False,
                 quiet=False,
@@ -47,7 +50,9 @@ class DockerDoc(DockerFile):
 
 
     def _run(self, client):
-        container = client.containers.run(DockerDoc.TAG, detach=True)
+
+        branch = self._args.lief_branch
+        container = client.containers.run(self._image_tag, detach=True)
 
         doc_path = "/tmp/LIEF_INSTALL/share/LIEF/doc"
         output = "documentation-{tag}.tar.gz".format(tag=self._args.lief_branch)
