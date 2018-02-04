@@ -66,6 +66,8 @@ def setup_lief_website(branch="master"):
     doc_archive = REPODIR / f"documentation-{TRIGGER_COMMIT}.tar.gz"
 
     cmds = [
+        f"{shutil.which('rm')} -rf  {LIEF_WEBSITE_DIR}/doc/latest/*",
+        f"{TAR} -C {LIEF_WEBSITE_DIR}/doc/latest/ -xvf {doc_archive} doc/sphinx",
         f"{TAR} -C {LIEF_WEBSITE_DIR}/doc/latest/ -xvf {doc_archive} doc/sphinx",
         f"{shutil.which('mv')} --force {LIEF_WEBSITE_DIR}/doc/latest/doc/sphinx/* {LIEF_WEBSITE_DIR}/doc/latest/",
         f"{GIT} add .",
