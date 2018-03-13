@@ -1,4 +1,4 @@
-FROM ubuntu:14.04
+FROM ubuntu:17.10
 MAINTAINER Romain Thomas <rthomas@quarkslab.com>
 ENV LIEF_TMP /tmp/LIEF
 ENV LIEF_INSTALL /tmp/LIEF_INSTALL
@@ -8,26 +8,20 @@ RUN apt-get install -y software-properties-common
 RUN add-apt-repository ppa:ubuntu-toolchain-r/test
 RUN apt-get update
 RUN apt-get install -y git cmake build-essential ca-certificates curl wget
-RUN apt-get install -y gcc-5 g++-5
+RUN apt-get install -y gcc-7 g++-7
 RUN apt-get install -y ccache
 RUN apt-get install -y graphviz
+RUN apt-get install -y doxygen
 
-RUN apt-get install -y python3 libpython3-all-dev python3-pip python3-setuptools
+RUN apt-get install -y python3.6 libpython3.6 libpython3.6-dev python3-setuptools python3-pip
 
-RUN wget --no-check-certificate http://cmake.org/files/v3.7/cmake-3.7.2-Linux-x86_64.tar.gz
-RUN tar -xzf cmake-3.7.2-Linux-x86_64.tar.gz
-ENV PATH=$PWD/cmake-3.7.2-Linux-x86_64/bin:$PATH
+RUN python3.6 -m pip install alabaster
+RUN python3.6 -m pip install sphinx==1.7.1
+RUN python3.6 -m pip install breathe==4.7.3
+RUN python3.6 -m pip install sphinx_rtd_theme
 
-RUN wget --no-check-certificate https://downloads.sourceforge.net/project/doxygen/rel-1.8.10/doxygen-1.8.10.linux.bin.tar.gz
-RUN tar -xzf doxygen-1.8.10.linux.bin.tar.gz
-ENV PATH=$PWD/doxygen-1.8.10/bin:$PATH
-
-RUN python3 -m pip install sphinx==1.4.8
-RUN python3 -m pip install breathe==4.4.0
-RUN python3 -m pip install sphinx_rtd_theme
-
-ENV CC=gcc-5
-ENV CXX=g++-5
+ENV CC=gcc-7
+ENV CXX=g++-7
 
 WORKDIR ${LIEF_TMP}
 RUN git clone https://github.com/lief-project/LIEF.git LIEF
@@ -40,10 +34,8 @@ RUN cmake                                        \
     -DCMAKE_CXX_COMPILER=${CXX}                  \
     -DCMAKE_C_COMPILER=${CC}                     \
     -DLIEF_PYTHON_API=on                         \
-    -DPYTHON_VERSION=3                           \
-    -DPYTHON_INCLUDE_DIR=/usr/include/python3.4m \
-    -DPYTHON_LIBRARY=/usr/lib/libpython3.4m.so   \
-    -DPYTHON_EXECUTABLE=/usr/bin/python3         \
+    -DLIEF_EXAMPLES=off                          \
+    -DPYTHON_VERSION=3.6                         \
     -DLIEF_DOC=on                                \
     -DCMAKE_INSTALL_PREFIX=${LIEF_INSTALL}       \
     -DCMAKE_BUILD_TYPE=Release                   \
