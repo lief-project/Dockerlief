@@ -68,7 +68,7 @@ def setup_lief_website(branch="master"):
     cmds = [
         f"{shutil.which('rm')} -rf  {LIEF_WEBSITE_DIR}/doc/latest/*",
         f"{TAR} -C {LIEF_WEBSITE_DIR}/doc/latest/ -xvf {doc_archive} doc/sphinx",
-        f"{TAR} -C {LIEF_WEBSITE_DIR}/doc/latest/doxygen -xvf {doc_archive} doc/doxygen",
+        f"{TAR} -C {LIEF_WEBSITE_DIR}/doc/latest/ -xvf {doc_archive} doc/doxygen",
         f"{shutil.which('mv')} --force {LIEF_WEBSITE_DIR}/doc/latest/doc/sphinx/* {LIEF_WEBSITE_DIR}/doc/latest/",
         f"{shutil.which('mv')} --force {LIEF_WEBSITE_DIR}/doc/latest/doc/doxygen {LIEF_WEBSITE_DIR}/doc/latest/",
         f"{GIT} add .",
