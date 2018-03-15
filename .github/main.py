@@ -70,7 +70,7 @@ def setup_lief_website(branch="master"):
         f"{TAR} -C {LIEF_WEBSITE_DIR}/doc/latest/ -xvf {doc_archive} doc/sphinx",
         f"{TAR} -C {LIEF_WEBSITE_DIR}/doc/latest/ -xvf {doc_archive} doc/sphinx",
         f"{shutil.which('mv')} --force {LIEF_WEBSITE_DIR}/doc/latest/doc/sphinx/* {LIEF_WEBSITE_DIR}/doc/latest/",
-        f"{shutil.which('mv')} --force {LIEF_WEBSITE_DIR}/doc/latest/doc/doxygen {LIEF_WEBSITE_DIR}/doc/latest/doxygen",
+        f"{shutil.which('mv')} --force {LIEF_WEBSITE_DIR}/doc/latest/doc/doxygen {LIEF_WEBSITE_DIR}/doc/latest/",
         f"{GIT} add .",
         #f"{GIT} diff --cached",
         f"{GIT} commit -m 'Update latest doc according to {TRIGGER_COMMIT[:7]}'"
