@@ -1,4 +1,4 @@
-FROM ubuntu:17.10
+FROM ubuntu:18.10
 MAINTAINER Romain Thomas <rthomas@quarkslab.com>
 ENV LIEF_TMP /tmp/LIEF
 ENV LIEF_INSTALL /tmp/LIEF_INSTALL
@@ -19,8 +19,8 @@ RUN apt-get install -y python3.6 libpython3.6 libpython3.6-dev python3-setuptool
 RUN python3.6 -m pip install alabaster
 RUN python3.6 -m pip install Pygments
 RUN python3.6 -m pip install imagesize
-RUN python3.6 -m pip install sphinx==1.7.4
-RUN python3.6 -m pip install breathe==4.7.3
+RUN python3.6 -m pip install sphinx
+RUN python3.6 -m pip install breathe
 RUN python3.6 -m pip install sphinx_rtd_theme
 
 ENV CC=gcc-7
