@@ -4,9 +4,7 @@ ENV LIEF_TMP /tmp/LIEF
 ENV LIEF_INSTALL /tmp/LIEF_INSTALL
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get install -y tzdata
 RUN ln -fs /usr/share/zoneinfo/Europe/Paris /etc/localtime
-RUN dpkg-reconfigure --frontend noninteractive tzdata
 RUN apt-get update && apt-get dist-upgrade -y
 RUN apt-get install -y software-properties-common
 RUN apt-get install -y git cmake build-essential ca-certificates curl wget
