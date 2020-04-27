@@ -1,4 +1,4 @@
-FROM ubuntu:18.10
+FROM ubuntu:20.04
 MAINTAINER Romain Thomas <rthomas@quarkslab.com>
 ENV LIEF_TMP /tmp/LIEF
 ENV LIEF_INSTALL /tmp/LIEF_INSTALL
@@ -12,14 +12,14 @@ RUN apt-get install -y graphviz
 RUN apt-get install -y doxygen
 RUN apt-get install -y qttools5-dev-tools qt4-dev-tools
 
-RUN apt-get install -y python3.6 libpython3.6 libpython3.6-dev python3-setuptools python3-pip
+RUN apt-get install -y python3.8 libpython3.8 libpython3.8-dev python3-setuptools python3-pip
 
-RUN python3.6 -m pip install alabaster
-RUN python3.6 -m pip install Pygments
-RUN python3.6 -m pip install imagesize
-RUN python3.6 -m pip install sphinx
-RUN python3.6 -m pip install breathe
-RUN python3.6 -m pip install sphinx_rtd_theme
+RUN python3.8 -m pip install alabaster
+RUN python3.8 -m pip install Pygments
+RUN python3.8 -m pip install imagesize
+RUN python3.8 -m pip install sphinx
+RUN python3.8 -m pip install breathe
+RUN python3.8 -m pip install sphinx_rtd_theme
 
 ENV CC=gcc-7
 ENV CXX=g++-7
@@ -36,7 +36,7 @@ RUN cmake                                        \
     -DCMAKE_C_COMPILER=${CC}                     \
     -DLIEF_PYTHON_API=on                         \
     -DLIEF_EXAMPLES=off                          \
-    -DPYTHON_VERSION=3.6                         \
+    -DPYTHON_VERSION=3.8                         \
     -DLIEF_DOC=on                                \
     -DCMAKE_INSTALL_PREFIX=${LIEF_INSTALL}       \
     -DCMAKE_BUILD_TYPE=Release                   \
