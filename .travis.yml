@@ -4,13 +4,11 @@ notifications:
     on_success: never
     on_failure: always
 
-sudo: required
-
 services:
   - docker
 
 python:
-    - "3.6"
+    - "3.8"
 
 script:
   - python ./dockerlief/main.py list
